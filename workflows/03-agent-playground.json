@@ -1,0 +1,94 @@
+{
+  "name": "Agent Playground",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -800
+      ],
+      "id": "dea5480b-e5be-4008-a44d-aa92792f639a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You will write a paragraph ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -336,
+        -800
+      ],
+      "id": "58e86c71-6a7a-4e46-9933-defeb1cba274",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "height": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -832
+      ],
+      "id": "f2c491df-8d2c-4526-8639-7e80c1080a51",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gemma-4-E4B-it.litertlm",
+          "mode": "id"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -264,
+        -568
+      ],
+      "id": "388a2b8d-9d4f-4be9-bc70-c59250b61655",
+      "name": "OpenAI Chat Model"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "meta": {
+    "exportedFrom": "n8n",
+    "sanitized": true,
+    "note": "Credentials and API keys removed. Set them in your own n8n instance after import."
+  }
+}
