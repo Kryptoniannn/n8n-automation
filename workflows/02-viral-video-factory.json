@@ -1,0 +1,273 @@
+{
+  "name": "Viral Video Factory",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['Share your video idea'] }}",
+        "options": {
+          "systemMessage": "You are an expert viral video concept writer creating hyper-detailed \"found footage\" prompts for Bangladesh-based content.\n\n## OUTPUT REQUIREMENTS\n\n* Length: 500 to 2000 characters (balance detail with brevity)\n* Must be production-ready and comprehensive\n\n## MANDATORY ELEMENTS\n\n**Bangladesh Context:**\nSetting (village/mosque/gully/river ghat/jungle), objects (prayer mat/tasbih/attar/rose petals/dates/prayer cap), sounds (azaan/rickshaw horns/crows/dogs), phone (old Redmi/Realme/Oppo)\n\n**Technical:**\nAspect ratio, camera flaws (grainy, shaky, poor focus), timestamps, imperfections\n\n**Dialogue (MANDATORY):**\nALWAYS: \"বাংলা\" (Bangla / English)\nExamples: \"আল্লাহ!\" (Allah! / God!), \"এটা কী?\" (Eta ki? / What is this?), \"এখান থেকে পালাও!\" (Ekhan theke palao! / Run!)\n\n**Include:**\nHuman reactions, lighting, color palette, camera work (shake/zoom/focus), sound design, viral elements\n\n## WRITING STYLE\n\nFlowing paragraphs, vivid descriptions, specific timestamps, raw authentic feel\n\n## EXAMPLE:\n\n\"Grainy 9:16 vertical, old Redmi phone. Crumbling rural Bangladeshi mosque at dusk, moss-covered walls, old prayer mats and green Islamic cloth. Small glowing orb (cricket ball size) floating, pulsing white-green. Camera violently shaking, struggles to focus. Three villagers visible - man in panjabi gasps \"আল্লাহ! এটা কী!\" (Allah! Eta ki! / God! What is this!), woman retreats screaming \"ভূত নাকি!\" (Bhoot naki! / Is it a ghost?), young man shouts \"এখান থেকে পালাও!\" (Ekhan theke palao! / Run from here!). At 11s orb shoots upward, camera jerks following it then drops - only rose petals and a prayer cap remain near the mosque entrance. Azaan, dogs barking and distant rickshaw horns fill the background.\"\n\n⚠️ CRITICAL RULES:\n\n1. LENGTH: 500-2000 characters. Count carefully. NO EXCEPTIONS.\n\n2. BANGLADESHI AESTHETICS: Only Bangladesh settings, objects, reactions, behaviors.\n\n3. BILINGUAL DIALOGUE: ALL dialogue as \"বাংলা\" (Bangla / English). Never skip.\n\n4. ALL ELEMENTS: Include setting, technical specs, dialogue, reactions, timestamps, camera work, sounds, viral potential.\n\n5. NO META-COMMENTARY: Output only the prompt. No \"Here's your prompt:\" or explanations.\n\n6. VERIFY COUNT: Check you're between 500-2000 characters. Adjust if needed.\n\n7. PARAGRAPH FORMAT: Flowing prose, not bullets.\n\n8. TIMESTAMPS: Include specific moments (e.g., \"at 8s\", \"at 15s\").\n\nDO NOT deviate. Output only the video prompt, 500-2000 characters, following all rules.\n\nTransform user's concept into a Bangladesh viral video prompt now.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9fa9f103-38ef-4f24-a8ba-e7857da2629a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/gpt-oss-20b",
+          "mode": "list",
+          "cachedResultName": "openai/gpt-oss-20b"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        296,
+        232
+      ],
+      "id": "dec23769-8982-4423-b6d8-b3af5bdf276f",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "formTitle": "Viral video creator",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Share your video idea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7b2db5ec-d940-4b9a-8857-711556777223",
+      "name": "Viral video creator",
+      "webhookId": "REPLACE_WITH_YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "openai/gpt-oss-20b",
+          "mode": "list",
+          "cachedResultName": "OPENAI/GPT-OSS-20B"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Based on this prompt {{ $json.output }}\nGive me a very short Youtube video title under 20 characters\nAnd after the title compulsory add #viralshort #shorts #Viral #short #indianviralshort\n\nIncluding all the hashtags given don't let the title exceed 100 characters"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "store": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        576,
+        0
+      ],
+      "id": "f2b91990-51e4-4a7a-a2e2-7ebe10b30fff",
+      "name": "Message a model"
+    },
+    {
+      "parameters": {
+        "amount": 200
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        0
+      ],
+      "id": "9855f8c7-9459-4fff-916a-6c488e8640b2",
+      "name": "Wait",
+      "webhookId": "REPLACE_WITH_YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/veo/record-info",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.KIE_API_KEY }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "f7189ad7-969b-4205-8bdc-2e75efd7cb98",
+      "name": "Get video"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.KIE_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"{{ JSON.stringify($('AI Agent').item.json.output) }}\",\n  \"model\": \"veo3_fast\",\n  \"watermark\": \"MyBrand\",\n  \"callBackUrl\": \"http://your-callback-url.com/complete\",\n  \"aspect_ratio\": \"9:16\",\n  \"enableFallback\": false,\n  \"enableTranslation\": true,\n  \"generationType\": \"TEXT_2_VIDEO\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        928,
+        0
+      ],
+      "id": "ea8c1c5a-8beb-49bb-af94-42b952f3533e",
+      "name": "Generate video"
+    },
+    {
+      "parameters": {
+        "operation": "uploadVideo"
+      },
+      "type": "n8n-nodes-upload-post.uploadPost",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        0
+      ],
+      "id": "90a2c689-b0be-432e-a970-3c39b4f574ef",
+      "name": "Upload a video"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viral video creator": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Generate video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get video": {
+      "main": [
+        [
+          {
+            "node": "Upload a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate video": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "meta": {
+    "exportedFrom": "n8n",
+    "sanitized": true,
+    "note": "Credentials and API keys removed. Set them in your own n8n instance after import."
+  }
+}
