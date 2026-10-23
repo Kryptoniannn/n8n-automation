@@ -1,0 +1,123 @@
+{
+  "name": "Gmail AI Support Agent",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -768,
+        -176
+      ],
+      "id": "aa50ffc3-0810-4ac8-b9dd-54e468f4b314",
+      "name": "Gmail Trigger"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/gpt-oss-20b",
+          "mode": "list",
+          "cachedResultName": "openai/gpt-oss-20b"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        32
+      ],
+      "id": "8e48cd4e-10a2-43f9-a5a1-dab3e8e6798f",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.snippet }}",
+        "options": {
+          "systemMessage": "You are a customer support agent for a Dhaka-based delivery business.\n\nRules:\n- We ONLY deliver within Dhaka. If asked about delivery to any other city (e.g. Chittagong), clearly say we currently deliver to Dhaka only.\n- Refund policy: We accept refunds only for size mismatch issues, and the customer must request within 3 days of delivery.\n- Reply politely and concisely, like a real support agent."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -544,
+        -176
+      ],
+      "id": "faf073e5-e7e1-40d5-987a-30b81a15f4d4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.From }}",
+        "subject": "=Re: {{ $('Gmail Trigger').item.json.Subject }}",
+        "message": "={{ $('AI Agent').item.json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -176,
+        -176
+      ],
+      "id": "99801f3a-108f-4dd7-8cca-44a0a03b1d9b",
+      "name": "Send a message",
+      "webhookId": "REPLACE_WITH_YOUR_WEBHOOK_ID"
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "meta": {
+    "exportedFrom": "n8n",
+    "sanitized": true,
+    "note": "Credentials and API keys removed. Set them in your own n8n instance after import."
+  }
+}
